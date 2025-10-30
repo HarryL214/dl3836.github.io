@@ -1,0 +1,126 @@
+---
+title: "Instacart Shopping Patterns"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(lubridate)
+library(plotly)
+library(flexdashboard)
+library(p8105.datasets)
+
+data("instacart")
+
+set.seed(20241030)
+instacart_sample <- instacart %>%
+  sample_n(5000) %>%
+  mutate(
+    order_dow = factor(
+      order_dow,
+      levels = 0:6,
+      labels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+    )
+  )
+
+department_summary <- instacart_sample %>%
+  count(department, name = "orders") %>%
+  arrange(desc(orders))
+
+hourly_trend <- instacart_sample %>%
+  count(order_hour_of_day, name = "orders") %>%
+  arrange(order_hour_of_day)
+
+cart_position <- instacart_sample %>%
+  select(order_dow, add_to_cart_order)
+
+reorder_rates <- instacart_sample %>%
+  mutate(reordered = if_else(reordered == 1, "Reordered", "First-time")) %>%
+  count(order_dow, reordered, name = "orders") %>%
+  group_by(order_dow) %>%
+  mutate(prop = orders / sum(orders)) %>%
+  ungroup()
+```
+
+Row {data-height=350}
+-------------------------------------
+
+### Orders by Department
+
+```{r}
+plot_ly(
+  department_summary %>% slice_head(n = 15),
+  x = ~orders,
+  y = ~reorder(department, orders),
+  type = "bar",
+  orientation = "h",
+  marker = list(color = "#2c7fb8")
+) %>%
+  layout(
+    xaxis = list(title = "Number of Orders"),
+    yaxis = list(title = "Department"),
+    margin = list(l = 120)
+  )
+```
+
+### Hourly Ordering Trend
+
+```{r}
+plot_ly(
+  hourly_trend,
+  x = ~order_hour_of_day,
+  y = ~orders,
+  type = "scatter",
+  mode = "lines+markers",
+  line = list(color = "#7fcdbb"),
+  marker = list(size = 6, color = "#1d91c0")
+) %>%
+  layout(
+    xaxis = list(title = "Hour of Day"),
+    yaxis = list(title = "Number of Orders"),
+    hovermode = "x unified"
+  )
+```
+
+Row {data-height=350}
+-------------------------------------
+
+### Cart Position by Day of Week
+
+```{r}
+plot_ly(
+  cart_position,
+  x = ~order_dow,
+  y = ~add_to_cart_order,
+  type = "box",
+  boxpoints = "outliers",
+  marker = list(color = "#fdae61")
+) %>%
+  layout(
+    xaxis = list(title = "Day of Week"),
+    yaxis = list(title = "Position Added to Cart")
+  )
+```
+
+### Reorder Share by Weekday
+
+```{r}
+plot_ly(
+  reorder_rates,
+  x = ~order_dow,
+  y = ~prop,
+  color = ~reordered,
+  colors = c("#fee090", "#fc8d59"),
+  type = "bar"
+) %>%
+  layout(
+    barmode = "stack",
+    xaxis = list(title = "Day of Week"),
+    yaxis = list(title = "Proportion of Orders"),
+    legend = list(orientation = "h", x = 0.2, y = -0.1)
+  ) %>%
+  config(displayModeBar = FALSE)
+```

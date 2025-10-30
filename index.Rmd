@@ -1,0 +1,27 @@
+---
+title: "Welcome"
+output:
+  html_document:
+    theme: cosmo
+    toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = FALSE)
+```
+
+# Hello, I'm Dianchen Li
+
+Welcome to my personal website. I'm a graduate student in the Mailman School of Public Health at Columbia University focusing on data science, health analytics, and reproducible research.
+
+## About Me
+
+I am passionate about leveraging statistical learning and visualization to inform better decisions in public health. My current projects emphasize collaborative, reproducible workflows and clear communication of data-driven insights.
+
+## What You'll Find Here
+
+- Highlights of my academic and professional experience on the [Experience](resume.html) page.
+- An interactive [data visualization dashboard](dashboard.html) created for this assignment using the Instacart dataset.
+- Links to my GitHub profile, LinkedIn page, and email in the site navigation.
+
+Thanks for visiting, and feel free to reach out!

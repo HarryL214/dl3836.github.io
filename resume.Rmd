@@ -1,0 +1,27 @@
+---
+title: "Experience"
+output:
+  html_document:
+    theme: cosmo
+    toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = FALSE)
+```
+
+# Academic and Professional Experience
+
+My full curriculum vitae is available for download and inline viewing below. The embedded PDF comes from the `CV_ Li Dianchen_final.pdf` file stored in this repository so the page renders using a relative path.
+
+<div style="height: 850px;">
+<iframe src="CV_ Li Dianchen_final.pdf" width="100%" height="100%" style="border: none;">
+  <p>Your browser does not support inline PDFs. You can download the CV <a href="CV_ Li Dianchen_final.pdf">here</a>.</p>
+</iframe>
+</div>
+
+## Highlights
+
+- Graduate student specializing in data science methodologies for public health.
+- Experienced with R, Python, SQL, and reproducible research workflows.
+- Enthusiastic about communicating complex analyses to technical and non-technical stakeholders.
