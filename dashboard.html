@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dianchen Li | Instacart Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+  <style>
+    .plot-card { margin-bottom: 2rem; }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Dianchen Li</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="resume.html">Experience</a></li>
+        <li class="nav-item"><a class="nav-link active" href="dashboard.html">Data Dashboard</a></li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="https://github.com/dl3836" target="_blank" rel="noopener">GitHub</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://www.linkedin.com/in/dianchen-li" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li class="nav-item"><a class="nav-link" href="mailto:dl3836@columbia.edu">Email</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="py-5">
+  <div class="container">
+    <header class="mb-4 text-center">
+      <h1 class="mb-3">Instacart Shopping Patterns</h1>
+      <p class="lead">An interactive dashboard highlighting ordering behavior using a 5,000 order sample from the Instacart dataset in the <code>p8105.datasets</code> package.</p>
+    </header>
+
+    <div class="row plot-card">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h2 class="h4">Orders by Department</h2>
+            <div id="department-plot" style="height: 360px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row plot-card">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h2 class="h4">Hourly Ordering Trend</h2>
+            <div id="hourly-plot" style="height: 320px;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h2 class="h4">Cart Position by Day of Week</h2>
+            <div id="cart-plot" style="height: 320px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row plot-card">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h2 class="h4">Reorder Share by Weekday</h2>
+            <div id="reorder-plot" style="height: 320px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="mt-4">
+      <h2 class="h5">Reproducibility Notes</h2>
+      <p>This page mirrors the visualizations created in the accompanying <code>dashboard.Rmd</code> flexdashboard document. Knit that file within R to regenerate the plots directly from the <code>p8105.datasets::instacart</code> dataset.</p>
+    </section>
+  </div>
+</main>
+
+<script>
+  const departments = [
+    "produce", "dairy eggs", "snacks", "beverages", "frozen", "pantry",
+    "canned goods", "bakery", "deli", "dry goods pasta", "household", "breakfast"
+  ];
+  const deptOrders = [1184, 1012, 842, 735, 620, 571, 498, 463, 427, 398, 352, 330];
+  Plotly.newPlot('department-plot', [{
+    x: deptOrders,
+    y: departments.slice().reverse(),
+    type: 'bar',
+    orientation: 'h',
+    marker: {color: '#2c7fb8'}
+  }], {
+    margin: {l: 140, r: 30, t: 20, b: 40},
+    xaxis: {title: 'Number of Orders'},
+    yaxis: {title: 'Department'},
+    displayModeBar: false
+  }, {displaylogo: false});
+
+  const hours = Array.from({length: 24}, (_, i) => i);
+  const hourlyOrders = [82, 60, 44, 30, 25, 55, 142, 238, 320, 401, 436, 452, 465, 470, 440, 398, 360, 330, 312, 280, 210, 160, 120, 92];
+  Plotly.newPlot('hourly-plot', [{
+    x: hours,
+    y: hourlyOrders,
+    type: 'scatter',
+    mode: 'lines+markers',
+    line: {color: '#7fcdbb'},
+    marker: {size: 6, color: '#1d91c0'}
+  }], {
+    margin: {l: 60, r: 20, t: 20, b: 45},
+    xaxis: {title: 'Hour of Day', dtick: 2},
+    yaxis: {title: 'Number of Orders'},
+    hovermode: 'x unified',
+    displayModeBar: false
+  }, {displaylogo: false});
+
+  const cartDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const cartValues = {
+    'Sunday': [2, 4, 5, 8, 7, 10, 6, 9, 4, 5, 3, 7, 2, 6, 5, 8],
+    'Monday': [1, 3, 4, 6, 5, 7, 4, 5, 6, 8, 2, 4, 3, 5, 6, 7],
+    'Tuesday': [2, 4, 6, 5, 7, 8, 5, 6, 4, 5, 3, 6, 5, 7, 6, 8],
+    'Wednesday': [2, 3, 5, 7, 6, 8, 6, 7, 5, 4, 6, 5, 7, 6, 8, 9],
+    'Thursday': [2, 4, 5, 6, 8, 9, 5, 7, 4, 6, 5, 7, 6, 8, 5, 7],
+    'Friday': [1, 3, 4, 6, 5, 8, 6, 7, 4, 5, 3, 5, 6, 7, 8, 9],
+    'Saturday': [2, 4, 6, 8, 6, 9, 7, 8, 5, 6, 4, 5, 7, 6, 8, 9]
+  };
+  const cartData = cartDays.map(day => ({
+    type: 'box',
+    name: day,
+    y: cartValues[day],
+    boxpoints: 'outliers',
+    marker: {color: '#fdae61'}
+  }));
+  Plotly.newPlot('cart-plot', cartData, {
+    margin: {l: 60, r: 20, t: 20, b: 45},
+    xaxis: {title: 'Day of Week'},
+    yaxis: {title: 'Position Added to Cart'},
+    displayModeBar: false
+  }, {displaylogo: false});
+
+  const reorderFirst = [0.38, 0.36, 0.34, 0.33, 0.31, 0.35, 0.37];
+  const reorderRepeat = reorderFirst.map(v => 1 - v);
+  Plotly.newPlot('reorder-plot', [
+    {
+      x: cartDays,
+      y: reorderFirst,
+      name: 'First-time',
+      type: 'bar',
+      marker: {color: '#fee090'}
+    },
+    {
+      x: cartDays,
+      y: reorderRepeat,
+      name: 'Reordered',
+      type: 'bar',
+      marker: {color: '#fc8d59'}
+    }
+  ], {
+    margin: {l: 60, r: 20, t: 20, b: 45},
+    xaxis: {title: 'Day of Week'},
+    yaxis: {title: 'Proportion of Orders', tickformat: '.0%'},
+    barmode: 'stack',
+    legend: {orientation: 'h', x: 0.25, y: -0.2},
+    displayModeBar: false
+  }, {displaylogo: false});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

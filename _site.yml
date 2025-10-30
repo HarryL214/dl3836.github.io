@@ -1,0 +1,18 @@
+name: "dl3836"
+navbar:
+  title: "Dianchen Li"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Experience"
+      href: resume.html
+    - text: "Data Dashboard"
+      href: dashboard.html
+  right:
+    - icon: fa-github
+      href: https://github.com/dl3836
+    - icon: fa-linkedin
+      href: https://www.linkedin.com/in/dianchen-li
+    - icon: fa-envelope
+      href: mailto:dl3836@columbia.edu
+output_dir: "."
